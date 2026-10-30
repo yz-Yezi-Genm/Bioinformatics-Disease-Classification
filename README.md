@@ -43,6 +43,8 @@
 - 机器学习：scikit-learn
 - 数据可视化：Matplotlib、Seaborn
 
+预处理脚本：`src/preprocess.py`；详细输入格式、运行命令和交接边界见 [`docs/preprocessing.md`](docs/preprocessing.md)。依赖可通过 `pip install -r requirements.txt` 安装。
+
 ### 3. 机器学习算法
 
 计划使用两种传统机器学习算法：
