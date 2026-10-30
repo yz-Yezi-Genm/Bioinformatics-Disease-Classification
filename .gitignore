@@ -218,3 +218,45 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ==========================================
+# Bioinformatics Experiment 1
+# Project-specific ignore rules
+# ==========================================
+
+# 原始生物信息学数据
+data/raw/*
+!data/raw/.gitkeep
+
+# 预处理后的数据
+data/processed/*
+!data/processed/.gitkeep
+
+# 训练生成的模型文件
+models/
+*.pkl
+*.joblib
+*.pt
+*.pth
+
+# Python 虚拟环境
+.venv/
+venv/
+
+# Python 缓存
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# 密钥与环境变量
+.env
+.env.*
+!.env.example
+
+# Windows 临时文件
+Thumbs.db
+Desktop.ini
+
+# macOS 临时文件
+.DS_Store
