@@ -45,6 +45,9 @@
 
 预处理脚本：`src/preprocess.py`；详细输入格式、运行命令和交接边界见 [`docs/preprocessing.md`](docs/preprocessing.md)。依赖可通过 `pip install -r requirements.txt` 安装。
 
+当前标签核对状态见 [`docs/label_validation_20261030.md`](docs/label_validation_20261030.md)：已与原始临床表完成内部一致性检查，等待 B 提供最终标签表以完成交叉核对。
+
+
 ### 3. 机器学习算法
 
 计划使用两种传统机器学习算法：
