@@ -231,6 +231,9 @@ data/raw/*
 # 预处理后的数据
 data/processed/*
 !data/processed/.gitkeep
+# Reviewed TCGA-BRCA preprocessing hand-off package (v2)
+!data/processed/tcga_brca_20261029_v2/
+!data/processed/tcga_brca_20261029_v2/**
 
 # 训练生成的模型文件
 models/

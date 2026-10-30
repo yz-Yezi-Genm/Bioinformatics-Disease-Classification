@@ -1,0 +1,72 @@
+{
+  "created_at_utc": "2026-10-29T12:24:39.121601+00:00",
+  "dataset": "TCGA-BRCA",
+  "task": "primary tumor vs solid tissue normal",
+  "source_archive": "TCGA-BRCA-data.zip",
+  "source_sha256": "5caf13eb4ea984cf821ba3fafb94a8ed13ec887c608611d3cac404a62615baa1",
+  "source_readme": "TCGA-BRCA 数据集（生物信息学上机实验1 · 角色A）\n数据来源：UCSC Xena / GDC TCGA Breast Cancer (BRCA)\n下载日期：2026-10-29\n\n一、文件清单\n\n1. TCGA-BRCA.star_counts.tsv.gz    133 MB   RNA-seq 表达矩阵（gzip 压缩的 TSV）\n2. TCGA-BRCA.clinical.tsv.gz       274 KB   样本临床信息（85 列）\n3. TCGA-BRCA.survival.tsv.gz       9.8 KB   生存信息（OS.time / OS / _PATIENT）\n\n直接解压 .gz 即可，不需要额外软件（7-Zip 或系统自带解压均可）。\n\n二、表达矩阵结构\n\n形状：60660 个基因 × 1226 个样本（外加 1 列基因编号，共 1227 列）\n- 行 = 基因，第一列是 Ensembl ID，带版本号，形如 ENSG00000000003.15\n- 列 = 样本，条码形如 TCGA-D8-A146-01A\n\n注意：行是基因、列是样本。sklearn 要求样本在行上，所以使用前必须转置。\n\n三、数值含义（重要）\n\n矩阵里的值是 log2(count + 1)，不是原始 reads count。\n- 随机森林 / SVM / XGBoost：直接用即可，不用还原。\n- DESeq2 等差异表达工具：需要整数 counts，必须先用 2^x - 1 还原并取整。\n\n四、样本标签\n\n条码第 14-15 位是样本类型代码：\n- 01 = Primary Tumor        1106 个\n- 11 = Solid Tissue Normal   113 个\n- 06 = Metastatic              7 个\n\n做「肿瘤 vs 正常」二分类时，必须把 06（转移）剔除，否则标签不纯。\n更稳妥的做法是直接用 clinical 表里的 sample_type.samples 列（第 74 列）取标签，\n再用条码做交叉核对。\n\n五、对齐时的坑\n\n- clinical 表有 1255 行，表达矩阵只有 1226 个样本，相差 29 个。\n  必须按样本条码取交集，不能默认顺序一致。\n- 同一个病人可能出现多个样本（不同 vial，如 01A / 01B）。\n  划分训练集和测试集时，同一病人的样本必须落在同一侧，否则属于数据泄漏。\n\n六、类别不平衡\n\n肿瘤 : 正常 ≈ 1106 : 113，接近 10 : 1。\n这意味着「全部预测为肿瘤」就能拿到约 90% 的准确率。\n评估必须报 AUC 和 F1，不能只报 Accuracy。\n\n七、重新下载时的注意点\n\n正确的文件名是 TCGA-BRCA.star_counts.tsv.gz，\n网上大量教程写的是 TCGA-BRCA.htseq_counts.tsv.gz，那是旧版命名，\n如今直接请求会返回 403。不要照抄博客里的链接。\n",
+  "expression_shape_genes_by_samples": [
+    60660,
+    1227
+  ],
+  "clinical_shape": [
+    1255,
+    85
+  ],
+  "clinical_samples_without_expression": 29,
+  "expression_samples_without_clinical": 0,
+  "clinical_barcode_type_mismatches": 0,
+  "sample_type_counts_expression": {
+    "Primary Tumor": 1106,
+    "Solid Tissue Normal": 113,
+    "Metastatic": 7
+  },
+  "selected_samples": 1219,
+  "excluded_sample_type_counts": {
+    "Metastatic": 7
+  },
+  "selected_class_counts_all": {
+    "normal_0": 113,
+    "tumor_1": 1106
+  },
+  "label_source": "clinical.sample_type.samples; checked against TCGA barcode sample type",
+  "survival_table_rows": 1232,
+  "survival_sample_overlap_selected": 1196,
+  "survival_used_for_classification": false,
+  "expression_missing_values": 0,
+  "expression_nonfinite_values": 0,
+  "expression_negative_values": 0,
+  "duplicate_gene_ids": 0,
+  "duplicate_sample_ids": 0,
+  "expression_transform_from_readme": "log2(count + 1)",
+  "expression_dtype_output": "float32",
+  "label_dtype_output": "uint8",
+  "label_mapping": {
+    "Solid Tissue Normal": 0,
+    "Primary Tumor": 1
+  },
+  "all_data_zero_genes": 2612,
+  "train_constant_features_detected": 2648,
+  "features_filtered_in_preprocessing": 0,
+  "features_retained": 60660,
+  "split_method": "StratifiedGroupKFold(n_splits=5, shuffle=True); first fold",
+  "split_seed": 20261029,
+  "group_key": "first 12 characters of TCGA sample barcode",
+  "train_samples": 976,
+  "test_samples": 243,
+  "train_patients": 877,
+  "test_patients": 218,
+  "patient_overlap": 0,
+  "train_class_counts": {
+    "normal_0": 88,
+    "tumor_1": 888
+  },
+  "test_class_counts": {
+    "normal_0": 25,
+    "tumor_1": 218
+  },
+  "train_npz_sha256": "c2615f6af0f60b9cb4203ae214e068d5a85ff4627ec3ccf44daf1bb4f2525b2e",
+  "test_npz_sha256": "e04c4b43b4f90bb9161bb2cee6ab7c21bfb0b9fe494ec04dfabb8c5579111f01",
+  "feature_ids_sha256": "e72cd92fc3243b062cbcbdc10c884e8926e9ff3dfc30de929400aba34a7e713d",
+  "sample_manifest_sha256": "c7126e25b548eb95972771838e7d2f6fed40a92e655da3f4ab9df5c33f47e787"
+}
