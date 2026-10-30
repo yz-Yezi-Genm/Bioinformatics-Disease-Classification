@@ -47,7 +47,7 @@ data/raw/TCGA-BRCA.survival.tsv.gz                    生存信息（1,232 行�
 data/raw/gencode.v36.annotation.gtf.gene.probemap     Ensembl ID → 基因名映射（60,660 条）
 ```
 
-数据文件体积较大，不入 Git 仓库（`.gitignore` 已排除 `data/raw/`），存放于本地并同步至小组共享网盘。
+数据文件体积较大，不入 Git 仓库（`.gitignore` 已排除 `data/raw/`），存放于本地。
 
 注：`gencode.v36.annotation.gtf.gene.probemap` 为单独下载的文件，不在表达矩阵的原始 gzip 文件内；`gene_expression.tsv` 由 `TCGA-BRCA.star_counts.tsv.gz` 解压得到。向组员分发时需确保五个文件齐全，不能只发 gzip 文件。
 
