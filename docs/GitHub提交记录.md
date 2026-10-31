@@ -11,7 +11,7 @@
 
 文件已按 src、docs、results/feature_selection、results/figures、scripts、examples 和 tests 的相对路径提交，包含独立 README_FEATURE_SELECTION.md 与 requirements-feature-selection.txt。保留团队原有 README、依赖、预处理代码和数据；未新增原始数据、虚拟环境、模型权重或交付 ZIP。
 
-记录生成时 PR 已创建，等待组长审核，未合并 main，未关闭 issue #5、未发布 issue 评论或代勾验收项。E/F 正式接入和最终模型确认仍需协作。该状态为本次交付时的记录，后续以 GitHub 实际状态为准。
+2026-10-31 按用户要求将 PR #6 合并到 main，合并提交为 `4f604edcdde7d1f7c282e5b05b3e9ed690386d7a`。文件已可在默认 main 分支直接访问。未关闭 issue #5、未发布 issue 评论或代勾验收项。E/F 正式接入和最终模型确认仍需协作。该状态为本次交付时的记录，后续以 GitHub 实际状态为准。
 
 ## 检查与本地包
 

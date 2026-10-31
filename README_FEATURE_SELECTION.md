@@ -41,4 +41,4 @@ python -m venv .venv
 - 尚未声称 E/F 已采用该设置；最终训练、调参和保留测试集评价由 E/F/G 完成。
 - 特征选择与参考实验没有加载 `test_data.npz`；加载器只使用训练数组及样本清单做对齐／患者隔离检查。
 - 上传到团队仓库时，按本包的相对路径合入，保留团队原有 README 与 requirements。不要上传 `data/`、`.venv/` 或大型中间文件。
-- 已上传至团队仓库分支 `codex/issue-5-feature-selection`，并创建 [PR #6](https://github.com/yz-Yezi-Genm/Bioinformatics-Disease-Classification/pull/6) 供组长审核；尚未合并至 main，issue #5 保持打开。详见 [GitHub 提交记录](docs/GitHub提交记录.md)。
+- 已通过分支 `codex/issue-5-feature-selection` 提交并合并 [PR #6](https://github.com/yz-Yezi-Genm/Bioinformatics-Disease-Classification/pull/6) ，文件已进入 `main`，issue #5 保持打开。详见 [GitHub 提交记录](docs/GitHub提交记录.md)。
