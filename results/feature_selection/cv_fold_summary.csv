@@ -1,0 +1,6 @@
+fold,train_samples,validation_samples,train_patients,validation_patients,train_normal,train_tumor,validation_normal,validation_tumor,patient_overlap
+1,780,196,702,175,70,710,18,178,0
+2,780,196,702,175,70,710,18,178,0
+3,782,194,702,175,71,711,17,177,0
+4,781,195,702,175,70,711,18,177,0
+5,781,195,700,177,71,710,17,178,0

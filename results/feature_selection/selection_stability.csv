@@ -1,0 +1,4 @@
+k,genes_selected_in_all_five_folds,unique_genes_across_folds,mean_pairwise_jaccard
+100,77,131,0.7736270920434907
+500,395,611,0.8114032124888464
+1000,863,1149,0.870135034251895

@@ -1,0 +1,42 @@
+{
+  "scope": "training-only fixed-model reference; not final E/F/G results",
+  "seed": 20261031,
+  "folds": 5,
+  "grouping": "patient_id",
+  "data_checksums": {
+    "train_data.npz": "c2615f6af0f60b9cb4203ae214e068d5a85ff4627ec3ccf44daf1bb4f2525b2e",
+    "feature_ids.tsv": "e72cd92fc3243b062cbcbdc10c884e8926e9ff3dfc30de929400aba34a7e713d",
+    "sample_manifest.tsv": "c7126e25b548eb95972771838e7d2f6fed40a92e655da3f4ab9df5c33f47e787"
+  },
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scipy": "1.18.1",
+    "scikit_learn": "1.9.1"
+  },
+  "candidate_ks": [
+    100,
+    500,
+    1000
+  ],
+  "k_rule": "Smallest k with mean validation ROC-AUC >= best mean minus 0.001.",
+  "auc_tolerance": 0.001,
+  "test_npz_loaded": false,
+  "rf": {
+    "n_estimators": 200,
+    "max_features": "sqrt",
+    "class_weight": "balanced_subsample",
+    "random_state": 20261031,
+    "n_jobs": 2
+  },
+  "svm": {
+    "kernel": "rbf",
+    "C": 1.0,
+    "gamma": "scale",
+    "class_weight": "balanced",
+    "scaling": "StandardScaler inside fold"
+  },
+  "decision_threshold": "RF predict default; SVM decision_function zero",
+  "note": "CV scores guide k selection and are not an unbiased final performance estimate."
+}

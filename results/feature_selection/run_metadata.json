@@ -1,0 +1,40 @@
+{
+  "dataset": "TCGA-BRCA preprocessed v2",
+  "task": "normal 0 vs primary tumor 1",
+  "data_checksums": {
+    "train_data.npz": "c2615f6af0f60b9cb4203ae214e068d5a85ff4627ec3ccf44daf1bb4f2525b2e",
+    "feature_ids.tsv": "e72cd92fc3243b062cbcbdc10c884e8926e9ff3dfc30de929400aba34a7e713d",
+    "sample_manifest.tsv": "c7126e25b548eb95972771838e7d2f6fed40a92e655da3f4ab9df5c33f47e787"
+  },
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scipy": "1.18.1",
+    "scikit_learn": "1.9.1"
+  },
+  "training_shape": [
+    976,
+    60660
+  ],
+  "classes": {
+    "0": 88,
+    "1": 888
+  },
+  "patients": 877,
+  "expression_min": 0.0,
+  "expression_max": 22.87331199645996,
+  "finite_values": true,
+  "train_constant_features_recomputed": 2648,
+  "audit_constant_features": 2648,
+  "variance_threshold": 0.0,
+  "score_func": "f_classif (float64 computation)",
+  "candidate_ks": [
+    100,
+    500,
+    1000
+  ],
+  "fit_scope": "full_training_set_descriptive_only",
+  "test_npz_loaded": false,
+  "note": "Do not reuse full-training selected lists inside CV; refit selector in each training fold."
+}

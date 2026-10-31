@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "unit_tests": 8,
+  "real_data_checks": [
+    "input hashes and training labels/IDs match C manifest",
+    "all three exported gene lists match fresh fit and original matrix columns",
+    "candidate lists nested and output columns correctly ordered",
+    "patient groups never cross CV validation folds",
+    "30 model/k/fold runs, each sample predicted out-of-fold once per model/k",
+    "fold ROC-AUC, balanced accuracy and F1 recomputed from stored predictions",
+    "summary means and sample standard deviations recomputed",
+    "fold feature IDs and reference k decisions checked"
+  ],
+  "test_npz_loaded": false
+}
