@@ -1,31 +1,59 @@
-# 随机森林：方法、实验与交接
+# 随机森林分类实验
 
-对应 [issue #7](https://github.com/yz-Yezi-Genm/Bioinformatics-Disease-Classification/issues/7)。训练入口现为 `src/random_forest.py`，由原 `src/train_rf.py` 直接重命名并增加补充实验选项，没有保留第二套训练逻辑。原训练记录中的旧命令、路径和哈希保持原样。
+本实验对应 [issue #7](https://github.com/yz-Yezi-Genm/Bioinformatics-Disease-Classification/issues/7)，区分 TCGA-BRCA 的原发肿瘤与实体正常组织。实验先在训练集内部比较参数，在完整训练集上拟合并冻结模型后完成独立测试；测试后补做了四组参数分析，但没有改变冻结模型或原测试结果。
 
-## 方法和数据
+## 1. 数据与划分
 
-随机森林对训练样本进行有放回抽样，构建多棵决策树；每次分裂只考虑部分特征，以降低树之间的相关性。分类综合各树的概率，使用 sklearn 默认 predict 决策规则。本任务未调整分类阈值，也没有额外标准化。RF 的 impurity importance 表示模型分裂贡献，受相关特征等因素影响，不等于因果关系。
+原始数据来自 **UCSC Xena 的 TCGA-BRCA RNA-seq 数据集（GDC Hub，STAR - Counts）**，详见项目的[数据来源说明](data_sources.md)。C 提供的 `TCGA-BRCA-experiment1-preprocessed-20261029-v2.zip` 是预处理数据的交付副本，不是原始数据来源。
 
-数据来自 C 的 `TCGA-BRCA-experiment1-preprocessed-20261029-v2.zip`，标签为 0=正常、1=肿瘤。沿用 C 的固定训练／测试划分：976 个训练样本、877 位训练患者，独立测试预测记录有 243 个样本。没有重新划分数据。
+沿用 C 已确定的训练／测试划分，标签为 **0=实体正常组织，1=原发肿瘤**：
 
-训练和补充分析只读取以下四个输入：
+| 集合 | 正常 | 肿瘤 | 合计 |
+|---|---:|---:|---:|
+| 训练集 | 88 | 888 | 976 |
+| 独立测试集 | 25 | 218 | 243 |
+
+每个样本包含 60,660 个基因。依据 C 的说明，表达值按 `log2(count + 1)` 尺度保留，RF 不再次取对数，也不额外标准化。C 按患者分组划分数据，记录训练／测试患者交集为 0；这一结论依据 C 的[预处理说明](preprocessing.md)和[交付读取说明](../data/processed/tcga_brca_20261029_v2/README_preprocessed.md)，不是 RF 实验重新核验原始数据所得。
+
+训练和补充分析使用以下输入：
 
 - `data/processed/tcga_brca_20261029_v2/train_data.npz`
 - `data/processed/tcga_brca_20261029_v2/feature_ids.tsv`
 - `results/feature_selection/cv_fold_assignments.csv`
 - `results/feature_selection/cv_metadata.json`
 
-自编精简入口不调用 D 的 `load_training_data`，不读取审计文件、完整样本清单或原始标签表。入口集中检查维度、有限值、二分类标签、样本唯一性、原始特征索引和 Ensembl ID；训练文件哈希与 D 记录一致。patient_id 取 sample_id 前 12 位，按样本核对折记录、标签和患者，各患者只属于一个验证折，训练／验证部分均含两类。
+训练入口检查样本、标签、基因列顺序及训练文件哈希，并按 sample_id 对齐 D 的内部折记录。patient_id 取样本条码前 12 位，确保同一患者不跨内部验证折，每个训练折和验证折均包含两类。样本 ID、患者 ID 和标签不作为表达特征。
 
-直接将 D 的 `create_selector(k=100)` 接入 Pipeline，再接 RF。原始 60,660 列及其顺序保持不变，样本 ID、患者 ID 和标签不进入 X。每折克隆新 Pipeline，只在该训练折拟合方差过滤和 ANOVA 筛选器，验证折仅 transform，避免把验证标签用于筛选。没有提前使用完整训练基因名单，未修改 C、D 的代码和数据。
+## 2. 方法与模型参数
 
-## 原训练与内部选模
+随机森林对训练样本有放回抽样，构建多棵决策树；每次分裂只考虑部分特征，以降低树之间的相关性。模型汇总各树的类别概率，使用 sklearn 默认分类规则，不另行调整阈值。
 
-使用 D 保存的患者五折，固定种子 20261031。主要选模指标预先固定为五折验证 ROC-AUC 均值，并列取预定义候选顺序中的第一项。另报 balanced accuracy、肿瘤 F1、肿瘤召回率、正常召回率（特异度）。均值为五折算术均值，标准差为样本标准差（ddof=1），不是置信区间。
+特征选择直接复用 D 的 `create_selector(k=100)`：**先去除当前训练数据中取值恒定的基因，再根据 ANOVA F 得分选择前 100 个基因**。F 得分衡量两类之间的表达差异相对于类内波动的大小。k=100 沿用 D 的[训练集内部参考建议](feature_selection.md)，原 RF 参数搜索固定该数量，没有重新搜索 k，也不能据此认定 100 个基因全局最优。
 
-原实验含基础 RF 在内共 10 组，`n_estimators=200`、`min_samples_split=2` 固定，其他参数与真实 AUC 如下（None 表示 sklearn 的对应默认含义）：
+筛选器与 RF 放在同一个 Pipeline 中。每个训练折重新拟合筛选器，验证折只应用已经学到的规则，避免验证标签参与筛选。Pipeline 始终接收原始顺序的 60,660 列，不提前按完整训练集的基因名单裁剪。
 
-| candidate | max_depth | min_samples_leaf | max_features | class_weight | AUC mean |
+冻结模型的关键参数如下，完整参数见[参数记录](../results/rf_supplement/frozen_model_parameters.json)。
+
+| 参数 | 冻结值 | 含义 |
+|---|---|---|
+| k | 100 | 筛选器保留的基因数量。 |
+| n_estimators | 200 | 随机森林包含 200 棵树。 |
+| max_depth | None | 不显式限制树深，仍受其他停止条件约束。 |
+| min_samples_split | 2 | 一个节点至少有 2 个样本才允许继续分裂。 |
+| min_samples_leaf | 1 | 每个叶节点至少保留 1 个训练样本。 |
+| max_features | sqrt | 每次分裂考虑约为输入特征数平方根的候选特征，100 个基因时为 10 个。 |
+| class_weight | balanced_subsample | 根据每棵树抽样后的类别数量设置权重，减轻类别不平衡的影响。 |
+| random_state | 20261031 | 固定随机过程，便于复现。 |
+
+## 3. 参数比较与内部验证
+
+沿用 D 保存的患者五折，参考种子为 20261031。主要选模指标预先固定为五折验证 ROC-AUC 均值，完全并列时取预定义候选顺序中的第一项；同时记录 balanced accuracy、肿瘤 F1、肿瘤召回率和特异度（正常召回率）。以下标准差采用五折样本标准差（ddof=1），不是置信区间。
+
+### 原参数比较
+
+共比较 10 组配置，固定 `n_estimators=200`、`min_samples_split=2`。表中 `max_depth=None` 表示不显式限制树深，`class_weight=None` 表示不额外设置类别权重。
+
+| 配置 | max_depth | min_samples_leaf | max_features | class_weight | 平均验证 AUC |
 |---|---|---|---|---|---|
 | rf_00 | None | 1 | sqrt | balanced_subsample | 0.999844 |
 | rf_01 | None | 1 | sqrt | None | 0.999746 |
@@ -38,9 +66,11 @@
 | rf_08 | None | 2 | 0.5 | balanced_subsample | 0.999750 |
 | rf_09 | 8 | 2 | sqrt | None | 0.999750 |
 
-候选 0 即基础模型，也是原训练的最佳候选。原实验完成 50 次 RF 折拟合、5 次多数类基线折拟合及一次完整训练拟合，约用时 86.2 秒。有限搜索未提高主要指标。所有 CV 成绩均为**训练集内部选模结果**，不能称为独立测试成绩或无偏泛化估计。
+基础配置 rf_00 获得最高平均验证 AUC，随后在完整训练集上拟合并冻结。各候选的五项指标见[原参数比较结果](../results/rf/parameter_search.csv)。这次有限搜索未提高基础配置的主要指标。
 
-| 内部五折指标 | 多数类基线均值 | 原基础／冻结 RF 均值 ± 标准差 |
+多数类基线在每个训练折中拟合，只预测该折训练数据的多数类。其结果与冻结配置的内部验证结果如下：
+
+| 内部五折指标 | 多数类基线均值 | rf_00 均值 ± 标准差 |
 |---|---:|---:|
 | ROC-AUC | 0.500000 | 0.999844 ± 0.000349 |
 | Balanced accuracy | 0.500000 | 0.965451 ± 0.029521 |
@@ -48,63 +78,27 @@
 | 肿瘤召回率 | 1.000000 | 0.998876 ± 0.002512 |
 | 特异度 | 0.000000 | 0.932026 ± 0.060585 |
 
-多数类基线虽有较高肿瘤 F1，却完全不能识别正常样本，因此需结合特异度和 balanced accuracy。
+多数类基线虽有较高肿瘤 F1，却不能识别正常样本。这些 CV 成绩用于训练集内部选模，不是独立测试成绩或无偏泛化估计。
 
-## 独立测试后的补充参数分析
+### 测试后的补充分析
 
-本补充实验发生在独立测试已经完成、成绩已经可见之后，**仅用于参数分析，不替换原冻结模型，不重新选优**。每个配置仅相对基础配置改变一个参数：树数 100、400，或 min_samples_split 为 5、10。固定 k=100、随机种子、患者折、评分规则和默认分类决策。每折重新拟合 D 的筛选器，未运行原 10 组搜索，也未读取测试表达矩阵。
+为补齐树数和节点分裂条件的比较，分别将基础配置的 `n_estimators` 改为 100、400，或将 `min_samples_split` 改为 5、10。每组只改变一个参数，保持 k、患者五折、随机种子、评分规则和折内筛选方式不变。环境、训练输入和基础配置与原实验一致，因此复用原基础五折对照。
 
-本次环境、四个训练输入哈希、D 源码及基础配置与原实验一致，因此复用原基础五折对照，实际新增 20 次 RF 折拟合。候选和折顺序执行，RF 为 2 线程、数值库限制为 2 线程，没有两层全核并行。
+| 配置 | 唯一变化 | 验证 AUC 均值 ± 标准差 |
+|---|---|---:|
+| baseline | 原基础配置 | 0.999844 ± 0.000349 |
+| trees_100 | n_estimators=100 | 0.999875 ± 0.000279 |
+| trees_400 | n_estimators=400 | 0.999813 ± 0.000419 |
+| split_5 | min_samples_split=5 | 0.999750 ± 0.000407 |
+| split_10 | min_samples_split=10 | 0.999750 ± 0.000407 |
 
-| candidate | ROC-AUC | Balanced accuracy | Tumor F1 | Tumor recall | Specificity |
-|---|---|---|---|---|---|
-| baseline | 0.999844 +/- 0.000349 | 0.965451 +/- 0.029521 | 0.996078 +/- 0.002479 | 0.998876 +/- 0.002512 | 0.932026 +/- 0.060585 |
-| trees_100 | 0.999875 +/- 0.000279 | 0.965451 +/- 0.029521 | 0.996078 +/- 0.002479 | 0.998876 +/- 0.002512 | 0.932026 +/- 0.060585 |
-| trees_400 | 0.999813 +/- 0.000419 | 0.965451 +/- 0.029521 | 0.996078 +/- 0.002479 | 0.998876 +/- 0.002512 | 0.932026 +/- 0.060585 |
-| split_5 | 0.999750 +/- 0.000407 | 0.965451 +/- 0.029521 | 0.996078 +/- 0.002479 | 0.998876 +/- 0.002512 | 0.932026 +/- 0.060585 |
-| split_10 | 0.999750 +/- 0.000407 | 0.965451 +/- 0.029521 | 0.996078 +/- 0.002479 | 0.998876 +/- 0.002512 | 0.932026 +/- 0.060585 |
+四组的 balanced accuracy、肿瘤 F1、肿瘤召回率和特异度均与上表 rf_00 相同，完整结果见[补充分析汇总](../results/rf_supplement/cv_summary.csv)。100 棵树的平均 AUC 比对照高约 0.000031，差异很小，不能据此声称显著优势。由于补充分析发生在独立测试之后，它只用于参数分析，不作为重新选择模型的依据；最终模型仍为原 200 棵树配置。
 
-补充配置的四项分类指标均与原基础配置相同。100 棵树的平均 AUC 比对照高约 0.000031，其余补充配置略低；差异很小，不能据此声称显著优势。冻结模型仍为原 200 棵树配置，未因补充结果改变参数、特征数或阈值。
+## 4. 独立测试结果
 
-## 冻结模型与独立测试
+冻结模型在 C 保留的 243 个独立测试样本上得到以下结果，记录见[测试指标](../results/rf_test_manual/metrics.json)。测试成绩没有用于调整参数、特征数量或分类阈值。
 
-`models/rf_pipeline.joblib` 包含筛选器与 RF，在全部 976 个训练样本上拟合。完整参数来自实际保存模型：
-
-```json
-{
-  "selector": {
-    "k": 100,
-    "variance_threshold": 0.0
-  },
-  "classifier": {
-    "bootstrap": true,
-    "ccp_alpha": 0.0,
-    "class_weight": "balanced_subsample",
-    "criterion": "gini",
-    "max_depth": null,
-    "max_features": "sqrt",
-    "max_leaf_nodes": null,
-    "max_samples": null,
-    "min_impurity_decrease": 0.0,
-    "min_samples_leaf": 1,
-    "min_samples_split": 2,
-    "min_weight_fraction_leaf": 0.0,
-    "monotonic_cst": null,
-    "n_estimators": 200,
-    "n_jobs": 2,
-    "oob_score": false,
-    "random_state": 20261031,
-    "verbose": 0,
-    "warm_start": false
-  }
-}
-```
-
-冻结模型 SHA256：`f2a231ddc814803334770447590d622c378c76c5d35ad919d3ada8bf045a7b4d`。本轮开始前和完成后均核对该值，模型未改变。原训练记录和原测试结果的文件哈希也保持一致。
-
-独立测试已由保留的 `test_rf_manual.py` 完成。本轮只从已有 `results/rf_test_manual/predictions.csv` 重算指标，没有再次加载测试表达矩阵或重复运行测试。核验了 243 个唯一且非空 sample_id，真实标签、预测标签为 0/1，概率有限且在 [0,1] 内，四个字段齐全。
-
-| 独立测试指标 | 数值 |
+| 指标 | 数值 |
 |---|---:|
 | Accuracy | 0.991770 |
 | ROC-AUC | 0.999725 |
@@ -113,11 +107,15 @@
 | 肿瘤召回率 | 0.995413 |
 | 特异度 | 0.960000 |
 
-混淆矩阵为 `[[24, 1], [1, 217]]`，行是真实类别、列是预测类别，顺序为正常／肿瘤。结果与原指标及混淆矩阵文件一致。正常测试样本只有 25 个，每错一个会使特异度变化 0.04；不能把本次较高成绩外推为稳定的临床性能，仍需更广泛的独立验证。
+混淆矩阵为 `[[24, 1], [1, 217]]`，行是真实类别、列是预测类别，顺序均为正常／肿瘤。共判对 241 个样本，正常和肿瘤各误判 1 个。正常测试样本只有 25 个，每错一个会使特异度变化 0.04，因此不能仅凭本次结果推断临床有效性。
 
-## 命令、输出与依赖
+[逐样本预测](../results/rf_test_manual/predictions.csv)包含 `sample_id`、`true_label`、`predicted_label` 和 `tumor_probability`。已有[核验记录](../results/rf_supplement/test_prediction_verification.json)确认 243 个样本 ID 唯一，且由预测重算的指标及混淆矩阵与原结果一致。
 
-在项目根目录运行；输出目录和模型路径必须是新的，入口拒绝覆盖既有结果。以下示例使用未占用路径，若已运行过请再换名称：
+## 5. 运行与输出
+
+在项目根目录使用 [requirements-rf.txt](../requirements-rf.txt) 所列依赖。实际环境为 Python 3.13.9、NumPy 2.3.5、pandas 2.3.3、SciPy 1.16.3、scikit-learn 1.7.2、joblib 1.5.2、threadpoolctl 3.5.0。候选与折顺序执行，RF 默认 2 线程，数值库限制为 2 线程。
+
+训练入口为 [src/random_forest.py](../src/random_forest.py)。以下复现示例使用新的输出目录和模型路径；若路径已存在，应再换名称，避免覆盖已有结果。
 
 ```powershell
 python -m src.random_forest --help
@@ -125,18 +123,25 @@ python -m src.random_forest --output-dir results/rf_reproduce_v1 --model-path mo
 python -m src.random_forest --supplement --output-dir results/rf_supplement_reproduce_v1 --jobs 2
 ```
 
-第一条检查命令行；第二条重现原训练方案并产生新模型，第三条仅复现四组补充分析、不保存模型。本轮只运行了补充分析，没有重新训练冻结模型。
+第二条命令复现原参数搜索并保存新模型；第三条只运行四组补充参数分析，不保存或替换模型。历史训练记录保留原入口名称 `src/train_rf.py`，当前运行应使用新名称。
 
-已有独立测试的命令为 `python test_rf_manual.py`；该脚本固定读取 `models/rf_pipeline.joblib` 和同版本的 `data/processed/tcga_brca_20261029_v2/test_data.npz`，输出到 `results/rf_test_manual/`，再次执行会覆盖这三个原结果文件。本轮没有执行此命令；仅记录供 G 在明确需要重现测试时使用。模型加载需要可导入的 `src.feature_selection`。
+独立测试脚本为 [test_rf_manual.py](../test_rf_manual.py)，命令为 `python test_rf_manual.py`。它固定读取 `models/rf_pipeline.joblib` 和同版本的 `data/processed/tcga_brca_20261029_v2/test_data.npz`，输出到 `results/rf_test_manual/`。该脚本再次执行会覆盖原测试指标、混淆矩阵和预测表，仅在需要重新评价时使用。
 
-- `results/rf/`：原参数搜索、基础与多数类基线、折外预测、实际折分配、运行配置、输入哈希、选中基因与重要性、原核验记录。历史记录不修改。
-- `results/rf_supplement/`：四组补充实验及基础对照的折指标、五项汇总、折外预测、实际折分配、运行环境、冻结模型完整参数、本轮核验记录和保护文件哈希。
-- `results/rf_test_manual/`：保留原 `metrics.json`、`confusion_matrix.csv`、`predictions.csv`。
-- `requirements-rf.txt`：实际依赖为 Python 3.13.9，NumPy 2.3.5、pandas 2.3.3、SciPy 1.16.3、scikit-learn 1.7.2、joblib 1.5.2、threadpoolctl 3.5.0。本轮继续使用现有环境，没有升级或修改团队依赖文件。
-- 模型受现有 Git 忽略规则保护，不提交模型、数据矩阵、压缩包、解压目录或缓存。
+| 位置 | 内容 |
+|---|---|
+| [results/rf/](../results/rf/) | 原参数搜索、内部折指标及预测、基因重要性和运行配置。 |
+| [results/rf_supplement/](../results/rf_supplement/) | 补充分析、基础对照、完整冻结参数及核验记录。 |
+| [results/rf_test_manual/](../results/rf_test_manual/) | 独立测试指标、混淆矩阵和逐样本预测。 |
+| `models/rf_pipeline.joblib` | 包含 D 筛选器和 RF 的完整冻结 Pipeline，按 Git 忽略规则单独共享。 |
 
-## 与 F、G 的交接约定
+选中基因的 Ensembl ID 和 RF 重要性见[基因表](../results/rf/selected_genes_importance.csv)。重要性反映模型的分裂贡献，不等于因果关系。
 
-F 应使用 C 同版本的 `train_data.npz` 和 `test_data.npz`，不自行重新划分；建议沿用 D 的内部患者五折，SVM 的特征筛选和标准化都放入 Pipeline，在每个训练折内拟合。不能把完整训练集选中的基因提前用于内部 CV。上述为需要 F 沿用的约定，尚未与 F 确认一致。
+## 6. 模型交接
 
-G 接收原冻结模型、完整特征映射、依赖及参数记录，以及 RF 原独立测试的逐样本预测、指标和混淆矩阵，按 sample_id 与 F 的同版本预测对齐后统一评价。需由组长确认交付范围，F 确认数据版本和划分，G 确认两模型预测样本一致及报告口径。补充结果单列为测试后分析，不用它替换冻结模型或其独立测试成绩。
+- 模型文件：`models/rf_pipeline.joblib`，在全部 976 个训练样本上拟合。加载时需保留可导入的 `src.feature_selection` 及兼容依赖；输入保持原始 60,660 列及顺序，直接调用完整 Pipeline。
+- 模型 SHA256：`f2a231ddc814803334770447590d622c378c76c5d35ad919d3ada8bf045a7b4d`，依据[原模型记录](../results/rf/best_model.json)；[保护核验记录](../results/rf_supplement/verification.json)显示补充分析前后未改变。
+- 模型交付方式：从项目本地路径 `models/rf_pipeline.joblib` 单独交付模型文件，并附依赖记录与模型 SHA256；模型不纳入 Git 提交。
+
+已确认 F 的 SVM 与 RF 使用相同的训练集、测试集划分。复现时沿用 C 的固定划分，不自行重新拆分；内部验证建议沿用 D 的患者五折，SVM 的特征筛选和标准化均在 Pipeline 内、每个训练折中拟合。
+
+交给 G 的 RF 测试预测位于 `results/rf_test_manual/predictions.csv`。G 按 `sample_id` 对齐 RF、SVM 的预测，核对样本集合与真实标签，使用相同标签定义（0=正常、1=肿瘤）和指标进行比较。RF 提供肿瘤概率，SVM 提供肿瘤方向的决策得分，二者都可用于 ROC-AUC，但决策得分不能当作概率。补充分析与冻结模型的正式测试成绩分开报告。
