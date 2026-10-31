@@ -1,0 +1,20 @@
+{
+  "rule": "Smallest k with mean validation ROC-AUC >= best mean minus 0.001.",
+  "models": {
+    "rf": {
+      "reference_k": 100,
+      "best_mean_auc": 0.9998439450686641,
+      "selected_mean_auc": 0.9998439450686641,
+      "status": "reference recommendation; E/F must confirm for their final model",
+      "feature_list_fit_scope": "entire training set after reference CV k choice"
+    },
+    "svm": {
+      "reference_k": 100,
+      "best_mean_auc": 0.999239920687376,
+      "selected_mean_auc": 0.999239920687376,
+      "status": "reference recommendation; E/F must confirm for their final model",
+      "feature_list_fit_scope": "entire training set after reference CV k choice"
+    }
+  },
+  "test_npz_loaded": false
+}

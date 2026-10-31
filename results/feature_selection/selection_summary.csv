@@ -1,0 +1,4 @@
+k,input_features,constant_removed,after_variance,selected_features,fit_scope,elapsed_seconds,infinite_scores
+100,60660,2648,58012,100,full_training_set_descriptive_only,1.881,0
+500,60660,2648,58012,500,full_training_set_descriptive_only,1.572,0
+1000,60660,2648,58012,1000,full_training_set_descriptive_only,1.382,0
