@@ -1,0 +1,53 @@
+{
+  "scope": "training_set_internal_model_selection_not_independent_test",
+  "best_candidate": "rf_00",
+  "best_params": {
+    "max_features": "sqrt",
+    "min_samples_leaf": 1,
+    "max_depth": null,
+    "class_weight": "balanced_subsample"
+  },
+  "metrics": {
+    "roc_auc": {
+      "mean": 0.9998439450686643,
+      "std_ddof1": 0.00034894943469089703
+    },
+    "balanced_accuracy": {
+      "mean": 0.9654512741426158,
+      "std_ddof1": 0.029521057378494774
+    },
+    "tumor_f1": {
+      "mean": 0.9960783258730931,
+      "std_ddof1": 0.0024791781405387845
+    },
+    "tumor_recall": {
+      "mean": 0.9988764044943821,
+      "std_ddof1": 0.0025124359297750477
+    },
+    "specificity": {
+      "mean": 0.9320261437908497,
+      "std_ddof1": 0.060585450225418086
+    }
+  },
+  "final_fit_samples": 976,
+  "final_fit_features": 60660,
+  "selected_genes": 100,
+  "model_path": "models\\rf_pipeline.joblib",
+  "model_sha256": "f2a231ddc814803334770447590d622c378c76c5d35ad919d3ada8bf045a7b4d",
+  "reload_check": {
+    "samples": [
+      "TCGA-BH-A18L-11A",
+      "TCGA-BH-A209-11A",
+      "TCGA-E9-A1N6-11A",
+      "TCGA-BH-A1F2-11A",
+      "TCGA-D8-A146-01A",
+      "TCGA-AQ-A0Y5-01A",
+      "TCGA-C8-A274-01A",
+      "TCGA-BH-A0BD-01A"
+    ],
+    "predictions_exact": true,
+    "probabilities_exact": true
+  },
+  "elapsed_seconds": 86.22038320000001,
+  "completed_utc": "2026-10-31T06:49:39.573828+00:00"
+}

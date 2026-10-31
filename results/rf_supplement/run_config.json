@@ -1,0 +1,63 @@
+{
+  "scope": "post_independent_test_training_only_parameter_analysis",
+  "purpose": "Parameter analysis only; no model replacement or new selection",
+  "primary_metric": "mean validation ROC-AUC",
+  "k": 100,
+  "seed": 20261031,
+  "baseline": {
+    "n_estimators": 200,
+    "min_samples_split": 2,
+    "random_state": 20261031,
+    "n_jobs": 2,
+    "max_features": "sqrt",
+    "min_samples_leaf": 1,
+    "max_depth": null,
+    "class_weight": "balanced_subsample"
+  },
+  "changes": {
+    "trees_100": {
+      "n_estimators": 100
+    },
+    "trees_400": {
+      "n_estimators": 400
+    },
+    "split_5": {
+      "min_samples_split": 5
+    },
+    "split_10": {
+      "min_samples_split": 10
+    }
+  },
+  "baseline_reused": true,
+  "versions": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scipy": "1.16.3",
+    "scikit_learn": "1.7.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.5.0"
+  },
+  "input_files_sha256": {
+    "data\\processed\\tcga_brca_20261029_v2\\train_data.npz": "c2615f6af0f60b9cb4203ae214e068d5a85ff4627ec3ccf44daf1bb4f2525b2e",
+    "data\\processed\\tcga_brca_20261029_v2\\feature_ids.tsv": "e72cd92fc3243b062cbcbdc10c884e8926e9ff3dfc30de929400aba34a7e713d",
+    "results\\feature_selection\\cv_fold_assignments.csv": "19f93169a3f02cb3b032423a566721caf7ea558ae9aa22db40ae28fe8a9021a5",
+    "results\\feature_selection\\cv_metadata.json": "020f1d8905d31dd6845cabf932df36c75e05580f3ddc12f3e3fd46fb80c58de2"
+  },
+  "command": [
+    "D:\\work files\\生物信息学\\src\\random_forest.py",
+    "--supplement",
+    "--output-dir",
+    "results/rf_supplement",
+    "--jobs",
+    "2"
+  ],
+  "source_sha256": "e87a490cdaaf98f01c35d23e706b159b9e3440c610ed547bd674b5deb08278b4",
+  "started_utc": "2026-10-31T13:35:34.808475+00:00",
+  "rf_jobs": 2,
+  "outer_jobs": 1,
+  "numerical_threads": 2,
+  "decision_rule": "predict default; no threshold tuning",
+  "test_expression_read": false,
+  "model_written": false
+}

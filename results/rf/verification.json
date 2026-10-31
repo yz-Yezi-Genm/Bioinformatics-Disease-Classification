@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "cv_metric_rows": 55,
+  "oof_prediction_rows": 10736,
+  "original_fold_assignments_unchanged": true,
+  "oof_coverage_and_alignment": true,
+  "all_five_metrics_recomputed": true,
+  "summaries_recomputed": true,
+  "auc_selection_rule_verified": true,
+  "selected_feature_mapping_verified": true,
+  "full_training_fit_samples": 976,
+  "serialization_check": {
+    "samples": [
+      "TCGA-BH-A18L-11A",
+      "TCGA-BH-A209-11A",
+      "TCGA-E9-A1N6-11A",
+      "TCGA-BH-A1F2-11A",
+      "TCGA-D8-A146-01A",
+      "TCGA-AQ-A0Y5-01A",
+      "TCGA-C8-A274-01A",
+      "TCGA-BH-A0BD-01A"
+    ],
+    "predictions_exact": true,
+    "probabilities_exact": true
+  },
+  "test_data_accessed": false
+}

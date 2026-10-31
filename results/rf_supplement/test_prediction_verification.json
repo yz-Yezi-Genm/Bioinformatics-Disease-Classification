@@ -1,0 +1,29 @@
+{
+  "test_prediction_verification": "passed",
+  "test_samples": 243,
+  "unique_sample_ids": true,
+  "class_counts": {
+    "0": 25,
+    "1": 218
+  },
+  "recomputed_metrics": {
+    "test_samples": 243,
+    "accuracy": 0.9917695473251029,
+    "roc_auc": 0.9997247706422019,
+    "balanced_accuracy": 0.9777064220183487,
+    "tumor_f1": 0.9954128440366973,
+    "tumor_recall": 0.9954128440366973,
+    "specificity": 0.96
+  },
+  "confusion_matrix": [
+    [
+      24,
+      1
+    ],
+    [
+      1,
+      217
+    ]
+  ],
+  "test_expression_loaded": false
+}

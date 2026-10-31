@@ -1,0 +1,112 @@
+{
+  "scope": "training_set_internal_model_selection",
+  "primary_metric": "mean validation ROC-AUC",
+  "tie_rule": "first candidate in predefined order",
+  "seed": 20261031,
+  "k": 100,
+  "n_estimators": 200,
+  "candidates": [
+    {
+      "max_features": "sqrt",
+      "min_samples_leaf": 1,
+      "max_depth": null,
+      "class_weight": "balanced_subsample"
+    },
+    {
+      "max_features": "sqrt",
+      "min_samples_leaf": 1,
+      "max_depth": null,
+      "class_weight": null
+    },
+    {
+      "max_features": "sqrt",
+      "min_samples_leaf": 2,
+      "max_depth": null,
+      "class_weight": "balanced"
+    },
+    {
+      "max_features": "sqrt",
+      "min_samples_leaf": 4,
+      "max_depth": 12,
+      "class_weight": "balanced_subsample"
+    },
+    {
+      "max_features": 0.3,
+      "min_samples_leaf": 1,
+      "max_depth": null,
+      "class_weight": "balanced_subsample"
+    },
+    {
+      "max_features": 0.3,
+      "min_samples_leaf": 2,
+      "max_depth": 12,
+      "class_weight": "balanced"
+    },
+    {
+      "max_features": 0.3,
+      "min_samples_leaf": 4,
+      "max_depth": null,
+      "class_weight": null
+    },
+    {
+      "max_features": 0.5,
+      "min_samples_leaf": 1,
+      "max_depth": 8,
+      "class_weight": "balanced"
+    },
+    {
+      "max_features": 0.5,
+      "min_samples_leaf": 2,
+      "max_depth": null,
+      "class_weight": "balanced_subsample"
+    },
+    {
+      "max_features": "sqrt",
+      "min_samples_leaf": 2,
+      "max_depth": 8,
+      "class_weight": null
+    }
+  ],
+  "search_combinations": 10,
+  "baseline_candidate": "rf_00",
+  "cv": "D saved patient folds; no new split",
+  "decision_rule": "estimator.predict default; no threshold tuning",
+  "rf_jobs": 2,
+  "outer_jobs": 1,
+  "numerical_threads": 2,
+  "shape": [
+    976,
+    60660
+  ],
+  "classes": {
+    "0": 88,
+    "1": 888
+  },
+  "patients": 877,
+  "input_files_sha256": {
+    "data\\processed\\tcga_brca_20261029_v2\\train_data.npz": "c2615f6af0f60b9cb4203ae214e068d5a85ff4627ec3ccf44daf1bb4f2525b2e",
+    "data\\processed\\tcga_brca_20261029_v2\\feature_ids.tsv": "e72cd92fc3243b062cbcbdc10c884e8926e9ff3dfc30de929400aba34a7e713d",
+    "results\\feature_selection\\cv_fold_assignments.csv": "19f93169a3f02cb3b032423a566721caf7ea558ae9aa22db40ae28fe8a9021a5",
+    "results\\feature_selection\\cv_metadata.json": "020f1d8905d31dd6845cabf932df36c75e05580f3ddc12f3e3fd46fb80c58de2"
+  },
+  "versions": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scipy": "1.16.3",
+    "scikit_learn": "1.7.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.5.0"
+  },
+  "python_executable": "D:\\anaconda\\python.exe",
+  "command": [
+    "D:\\work files\\生物信息学\\src\\train_rf.py"
+  ],
+  "model_path": "models\\rf_pipeline.joblib",
+  "started_utc": "2026-10-31T06:48:14.057452+00:00",
+  "test_data_accessed": false,
+  "source_sha256": {
+    "D:\\work files\\生物信息学\\src\\train_rf.py": "b04d8c63609681e7e8860b5283b43edbcc8da283221a07fbf2e6c2c596df0863",
+    "D:\\work files\\生物信息学\\src\\feature_selection.py": "82553fc9488ad746de0768b231b694280a5dc218e20b89709c24c70ef1bc024e"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "repository_commit": "9f991763b3ce4cc70cdf5f38bb8039744d00ed1d",
+  "checkout": "New partial clone with explicit sparse paths; no pre-existing workspace files.",
+  "preparation_archive": "C:/Users/Jungle/Downloads/TCGA-BRCA-experiment1-preprocessed-20261029-v2.zip",
+  "archive_members_read": [
+    "train_data.npz",
+    "feature_ids.tsv"
+  ],
+  "training_inputs_read": [
+    "data/processed/tcga_brca_20261029_v2/train_data.npz",
+    "data/processed/tcga_brca_20261029_v2/feature_ids.tsv",
+    "results/feature_selection/cv_fold_assignments.csv",
+    "results/feature_selection/cv_metadata.json"
+  ],
+  "prohibited_data_files_read": [],
+  "existing_tracked_files_modified": false,
+  "git_commit_or_push_performed": false,
+  "verification": "Recomputed all fold metrics and summaries from saved OOF predictions; compared fold membership and selected-feature mapping; no repository-wide scripts run."
+}
