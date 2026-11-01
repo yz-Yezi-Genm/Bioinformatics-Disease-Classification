@@ -1,0 +1,9 @@
+{
+  "test_samples": 243,
+  "accuracy": 0.9917695473251029,
+  "roc_auc": 0.9997247706422019,
+  "balanced_accuracy": 0.9777064220183487,
+  "tumor_f1": 0.9954128440366973,
+  "tumor_recall": 0.9954128440366973,
+  "specificity": 0.96
+}
