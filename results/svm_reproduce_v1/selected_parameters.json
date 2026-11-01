@@ -1,0 +1,29 @@
+{
+  "candidate_id": 4,
+  "parameters": {
+    "classifier__C": 0.1,
+    "classifier__gamma": 0.001,
+    "classifier__kernel": "rbf"
+  },
+  "feature_count": 100,
+  "mean_cv": {
+    "roc_auc": 0.9996207175394332,
+    "balanced_accuracy": 0.9843130409022619,
+    "accuracy": 0.9805282493647736,
+    "tumor_f1": 0.9891734847801577,
+    "macro_f1": 0.9461354860440856,
+    "tumor_recall": 0.9797371929156352,
+    "specificity": 0.9888888888888889
+  },
+  "std_cv": {
+    "roc_auc": 0.00023336660885382572,
+    "balanced_accuracy": 0.00833639022877989,
+    "accuracy": 0.008194081255062357,
+    "tumor_f1": 0.004605085662901591,
+    "macro_f1": 0.020775218335373127,
+    "tumor_recall": 0.010435026184695656,
+    "specificity": 0.022222222222222233
+  },
+  "test_npz_loaded": false,
+  "frozen_at_utc": "2026-11-01T03:51:23.884593+00:00"
+}
