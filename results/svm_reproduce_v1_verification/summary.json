@@ -1,0 +1,59 @@
+{
+  "n_test_samples": 243,
+  "sample_ids_equal": true,
+  "true_labels_equal": true,
+  "predicted_labels_equal": true,
+  "decision_scores_exact_equal": true,
+  "decision_scores_within_tolerance": true,
+  "predicted_label_mismatch_count": 0,
+  "exact_score_difference_count": 0,
+  "max_absolute_score_difference": 0.0,
+  "absolute_tolerance": 1e-12,
+  "relative_tolerance": 0,
+  "row_order_equal": true,
+  "prediction_consistency": "exact_match",
+  "status": "passed",
+  "selected_parameters_equal": true,
+  "reported_metrics_verified": true,
+  "metrics_equal": true,
+  "prediction_files_byte_identical": true,
+  "original_parameters": {
+    "classifier__C": 0.1,
+    "classifier__gamma": 0.001,
+    "classifier__kernel": "rbf"
+  },
+  "reproduced_parameters": {
+    "classifier__C": 0.1,
+    "classifier__gamma": 0.001,
+    "classifier__kernel": "rbf"
+  },
+  "feature_count": 100,
+  "original_frozen_at_utc": "2026-10-31T10:48:08.953835+00:00",
+  "reproduced_frozen_at_utc": "2026-11-01T03:51:23.884593+00:00",
+  "split": {
+    "train_samples": 976,
+    "test_samples": 243,
+    "train_patients": 877,
+    "test_patients": 218,
+    "train_test_patient_overlap": 0
+  },
+  "training_performed": false,
+  "generated_at_utc": "2026-11-01T10:24:29.776275+00:00",
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.8.0"
+  },
+  "inputs": {
+    "results/svm/test_predictions.csv": "92d8fd0a378e5750542e9b15cd5cd850319938bb9ca680b5be1da9ea9943847d",
+    "results/svm_reproduce_v1/test_predictions.csv": "92d8fd0a378e5750542e9b15cd5cd850319938bb9ca680b5be1da9ea9943847d",
+    "results/svm/selected_parameters.json": "bd1857d4d00849d1b6c841b423b946403e69fdfbf28db480bd6e4416d46e5ef7",
+    "results/svm_reproduce_v1/selected_parameters.json": "e7e29872750781cf8b99ab9e1e7265f574823fda89b6efa6c8649c0514da3309",
+    "results/svm_reproduce_v1/test_metrics.json": "3081866d0d3502665eeedad9702f5edd3bcfd48709feabe5061a43deb7b50123",
+    "data/processed/tcga_brca_20261029_v2/test_data.npz": "e04c4b43b4f90bb9161bb2cee6ab7c21bfb0b9fe494ec04dfabb8c5579111f01",
+    "data/processed/tcga_brca_20261029_v2/train_data.npz": "c2615f6af0f60b9cb4203ae214e068d5a85ff4627ec3ccf44daf1bb4f2525b2e",
+    "data/processed/tcga_brca_20261029_v2/sample_manifest.tsv": "c7126e25b548eb95972771838e7d2f6fed40a92e655da3f4ab9df5c33f47e787"
+  },
+  "checker_sha256": "60da83aa09840815f63a093fa5da766a13ae7b33cc14c0bf9c18f6e98e801c1e"
+}
