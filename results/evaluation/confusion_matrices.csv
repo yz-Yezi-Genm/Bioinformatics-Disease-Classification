@@ -1,0 +1,5 @@
+﻿model,true_label,predicted_normal,predicted_tumor
+Random Forest,0,24,1
+Random Forest,1,1,217
+SVM,0,25,0
+SVM,1,2,216

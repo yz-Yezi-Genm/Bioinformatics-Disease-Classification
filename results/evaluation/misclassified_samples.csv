@@ -1,0 +1,5 @@
+﻿model,sample_id,patient_id,y_true,y_pred,score,error_type,score_type
+Random Forest,TCGA-BH-A18M-11A,TCGA-BH-A18M,0,1,0.6,FP,tumor_probability
+Random Forest,TCGA-AO-A1KO-01A,TCGA-AO-A1KO,1,0,0.19,FN,tumor_probability
+SVM,TCGA-GM-A3XG-01A,TCGA-GM-A3XG,1,0,-0.2368103148269746,FN,decision_function
+SVM,TCGA-AO-A1KO-01A,TCGA-AO-A1KO,1,0,-1.027492472307287,FN,decision_function
