@@ -1,0 +1,23 @@
+{
+  "n_samples": 243,
+  "accuracy": 0.9917695473251029,
+  "balanced_accuracy": 0.9954128440366973,
+  "roc_auc": 0.9990825688073395,
+  "tumor_precision": 1.0,
+  "tumor_recall": 0.9908256880733946,
+  "specificity": 1.0,
+  "tumor_f1": 0.9953917050691244,
+  "macro_f1": 0.978465083303793,
+  "confusion_matrix": [
+    [
+      25,
+      0
+    ],
+    [
+      2,
+      216
+    ]
+  ],
+  "confusion_matrix_order": "rows=true, columns=predicted; labels=[0,1]",
+  "evaluation_scope": "held-out test; no parameter or threshold changes after evaluation"
+}
